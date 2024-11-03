@@ -1,67 +1,110 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-  decrement,
-  increment,
-  incrementByAmount,
-  incrementAsync,
-  incrementIfOdd,
-  selectCount,
-} from "./redux/counter/counterSlice";
-import styles from './styles/Counter.module.css';
+import React, { useEffect } from "react";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import LoginPage from "./pages/login";
+import BookPage from "./pages/book";
+import HomePage from "./pages/homepage";
+
+import RegisterPage from "./pages/register";
+import { useDispatch, useSelector } from "react-redux";
+import { doGetAccountAction } from "./redux/account/accountSlice";
+import { getAccount } from "./services/apiService";
+import Loading from "./components/Loading";
+import NotFound from "./components/NotFound";
+import AdminPage from "./pages/admin";
+import ProtectedRoute from "./components/ProtectedRoute";
+import LayoutClient from "./components/Layout/LayoutClient";
+import LayoutAdmin from "./components/Layout/LayoutAdmin";
+
+import UserTable from "./components/Admin/User/UserTable";
+import BookTable from "./components/Admin/Book/BookTable";
 
 export default function App() {
-  const count = useSelector(selectCount);
   const dispatch = useDispatch();
-  const [incrementAmount, setIncrementAmount] = useState('2');
+  const isAuthenticated = useSelector((state) => state.account.isAuthenticated);
 
-  const incrementValue = Number(incrementAmount) || 0;
+  const fetchAccount = async () => {
+    if (
+      window.location.pathname === "/login" ||
+      window.location.pathname === "/register"
+    ) {
+      return;
+    }
+
+    const res = await getAccount();
+
+    if (res && res.data) {
+      dispatch(doGetAccountAction(res.data.user));
+    }
+  };
+
+  useEffect(() => {
+    fetchAccount();
+  }, []);
+
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <LayoutClient />,
+      errorElement: <NotFound />,
+      children: [
+        { index: true, element: <HomePage /> },
+        {
+          path: "book",
+          element: <BookPage />,
+        },
+        {
+          path: "login",
+          element: <LoginPage />,
+        },
+        {
+          path: "register",
+          element: <RegisterPage />,
+        },
+      ],
+    },
+    {
+      path: "/admin",
+      element: <LayoutAdmin />,
+      errorElement: <NotFound />,
+      children: [
+        {
+          index: true,
+          element: (
+            <ProtectedRoute>
+              <AdminPage />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "book",
+          element: <BookTable />,
+        },
+        {
+          path: "user",
+          element: <UserTable />,
+        },
+      ],
+    },
+    {
+      path: "/login",
+      element: <LoginPage />,
+    },
+    {
+      path: "/register",
+      element: <RegisterPage />,
+    },
+  ]);
 
   return (
-    <div>
-      <div className={styles.row}>
-        <button
-          className={styles.button}
-          aria-label="Decrement value"
-          onClick={() => dispatch(decrement())}
-        >
-          -
-        </button>
-        <span className={styles.value}>{count}</span>
-        <button
-          className={styles.button}
-          aria-label="Increment value"
-          onClick={() => dispatch(increment())}
-        >
-          +
-        </button>
-      </div>
-      <div className={styles.row}>
-        <input
-          className={styles.textbox}
-          aria-label="Set increment amount"
-          value={incrementAmount}
-          onChange={(e) => setIncrementAmount(e.target.value)}
-        />
-        <button
-          className={styles.button}
-          onClick={() => dispatch(incrementByAmount(incrementValue))}
-        >
-          Add Amount
-        </button>
-        <button
-          className={styles.asyncButton}
-          onClick={() => dispatch(incrementAsync(incrementValue))}
-        >
-          Add Async
-        </button>
-        <button
-          className={styles.button}
-          onClick={() => dispatch(incrementIfOdd(incrementValue))}
-        >
-          Add If Odd
-        </button>
-      </div>
-    </div>
+    <>
+      {isAuthenticated === true ||
+      window.location.pathname === "/login" ||
+      window.location.pathname === "/register" ||
+      window.location.pathname === "/" ? (
+        <RouterProvider router={router} />
+      ) : (
+        <Loading />
+      )}
+    </>
   );
 }
