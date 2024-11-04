@@ -17,11 +17,19 @@ import { useForm } from "antd/es/form/Form";
 import {
   callUploadBookImg,
   getListCategory,
-  postCreateBook,
+  putUpdateBook,
 } from "../../../services/apiService";
+import { v4 as uuidv4 } from "uuid";
 
-const BookModalCreate = (props) => {
-  const { openModalCreate, setOpenModalCreate } = props;
+const BookModalUpdate = (props) => {
+  const {
+    openModalUpdate,
+    setOpenModalUpdate,
+    dataModalUpdate,
+    setDataModalUpdate,
+    fetchBook,
+  } = props;
+  // console.log(dataModalUpdate);
   const [isSubmit, setIsSubmit] = useState(false);
   const [listCategory, setListCategory] = useState([]);
 
@@ -39,6 +47,11 @@ const BookModalCreate = (props) => {
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
 
+  const [initForm, setInitForm] = useState({});
+
+  // useEffect(() => {
+  //   form.setFieldsValue(dataModalUpdate);
+  // }, [dataModalUpdate]);
   const fetchCategory = async () => {
     const res = await getListCategory();
     if (res && res.data) {
@@ -49,6 +62,49 @@ const BookModalCreate = (props) => {
     fetchCategory();
   }, []);
 
+  useEffect(() => {
+    if (dataModalUpdate?._id) {
+      const arrThumbnail = [
+        {
+          uid: uuidv4(),
+          name: dataModalUpdate.thumbnail,
+          status: "done",
+          url: `${import.meta.env.VITE_BACKEND_URL}/images/book/${
+            dataModalUpdate.thumbnail
+          }`,
+        },
+      ];
+
+      const arrSlider = dataModalUpdate.slider.map((item) => {
+        return {
+          uid: uuidv4(),
+          name: item,
+          status: "done",
+          url: `${import.meta.env.VITE_BACKEND_URL}/images/book/${item}`,
+        };
+      });
+      const init = {
+        _id: dataModalUpdate._id,
+        thumbnail: { fileList: arrThumbnail },
+        slider: { fileList: arrSlider },
+        mainText: dataModalUpdate.mainText,
+        author: dataModalUpdate.author,
+        price: dataModalUpdate.price,
+        sold: dataModalUpdate.sold,
+        quantity: dataModalUpdate.quantity,
+        category: dataModalUpdate.category,
+      };
+      setInitForm(init);
+      setDataThumbnail(arrThumbnail);
+      setDataSlider(arrSlider);
+      form.setFieldsValue(init);
+    }
+
+    return () => {
+      form.resetFields();
+    };
+  }, [dataModalUpdate]);
+
   const onFinish = async (values) => {
     if (dataThumbnail.length === 0) {
       notification.error({
@@ -57,7 +113,6 @@ const BookModalCreate = (props) => {
       });
       return;
     }
-
     if (dataSlider.length === 0) {
       notification.error({
         message: "Lỗi validate",
@@ -65,13 +120,12 @@ const BookModalCreate = (props) => {
       });
       return;
     }
-
-    const { mainText, author, price, sold, quantity, category } = values;
+    const { _id, mainText, author, price, sold, quantity, category } = values;
     const thumbnail = dataThumbnail[0].name;
     const slider = dataSlider.map((item) => item.name);
-
     setIsSubmit(true);
-    const res = await postCreateBook(
+    const res = await putUpdateBook(
+      _id,
       thumbnail,
       slider,
       mainText,
@@ -82,12 +136,13 @@ const BookModalCreate = (props) => {
       category
     );
     if (res && res.data) {
-      message.success("Tạo mới book thành công");
+      message.success("Cập nhật thành công");
       form.resetFields();
       setDataSlider([]);
       setDataThumbnail([]);
-      setOpenModalCreate(false);
-      await props.fetchBook();
+      setInitForm(null);
+      setOpenModalUpdate(false);
+      await fetchBook();
     } else {
       notification.error({
         message: "Đã có lỗi xảy ra",
@@ -172,6 +227,13 @@ const BookModalCreate = (props) => {
   };
 
   const handlePreview = async (file) => {
+    if (file.url && !file.originFileObj) {
+      setPreviewImage(file.url);
+      setPreviewOpen(true);
+      setPreviewTitle(
+        file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
+      );
+    }
     getBase64(file.originFileObj, (url) => {
       setPreviewImage(url);
       setPreviewOpen(true);
@@ -191,17 +253,31 @@ const BookModalCreate = (props) => {
   return (
     <>
       <Modal
-        title="Thêm mới"
-        open={openModalCreate}
+        title="Chỉnh sửa thông tin"
+        open={openModalUpdate}
         onOk={() => form.submit()}
-        onCancel={() => setOpenModalCreate(false)}
-        okText="Tạo mới"
+        onCancel={() => {
+          setOpenModalUpdate(false);
+          setInitForm(null);
+          setDataModalUpdate(null);
+          setOpenModalUpdate(false);
+        }}
+        okText="Lưu"
         cancelText="Hủy"
         confirmLoading={isSubmit}
         width="50%"
       >
         <Form form={form} onFinish={onFinish} autoComplete="off" name="basic">
           <Row gutter={[20, 0]}>
+            <Form.Item
+              hidden
+              labelCol={{ span: 24 }} //whole column
+              label="id"
+              name="_id"
+            >
+              <Input />
+            </Form.Item>
+
             <Col span={12}>
               <Form.Item
                 labelCol={{ span: 24 }} //whole column
@@ -299,6 +375,7 @@ const BookModalCreate = (props) => {
                   onChange={handleChange}
                   onRemove={(file) => handleRemoveFile(file, "thumbnail")}
                   onPreview={handlePreview}
+                  defaultFileList={initForm?.thumbnail?.fileList ?? []}
                 >
                   <div>
                     {loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -323,6 +400,7 @@ const BookModalCreate = (props) => {
                   onChange={(info) => handleChange(info, "slider")}
                   onRemove={(file) => handleRemoveFile(file, "slider")}
                   onPreview={handlePreview}
+                  defaultFileList={initForm?.slider?.fileList ?? []}
                 >
                   <div>
                     {loadingSlider ? <LoadingOutlined /> : <PlusOutlined />}
@@ -347,4 +425,4 @@ const BookModalCreate = (props) => {
   );
 };
 
-export default BookModalCreate;
+export default BookModalUpdate;

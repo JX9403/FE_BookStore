@@ -1,4 +1,4 @@
-import { Badge, Descriptions, Divider, Drawer } from "antd";
+import { Badge, Descriptions, Divider, Drawer, Modal } from "antd";
 import moment from "moment";
 
 import { PlusOutlined } from "@ant-design/icons";
@@ -6,6 +6,7 @@ import { Image, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+// library
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -22,14 +23,16 @@ const BookViewDetail = (props) => {
     setDataViewDetail,
   } = props;
 
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [previewTitle, setPreviewTitle] = useState("");
+
+  const [fileList, setFileList] = useState([]);
+
   const onClose = () => {
     setOpenViewDetail(false);
     setDataViewDetail(null);
   };
-
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState([]);
 
   useEffect(() => {
     if (dataViewDetail) {
@@ -59,11 +62,15 @@ const BookViewDetail = (props) => {
       setFileList([imgThumbnail, ...imgSlider]);
     }
   }, [dataViewDetail]);
+
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
     setPreviewImage(file.url || file.preview);
+    setPreviewTitle(
+      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
+    );
     setPreviewOpen(true);
   };
 
@@ -88,8 +95,18 @@ const BookViewDetail = (props) => {
           <Descriptions.Item label="Tác giả">
             {dataViewDetail?.author}
           </Descriptions.Item>
+
+          <Descriptions.Item label="Số lượng">
+            {dataViewDetail?.quantity}
+          </Descriptions.Item>
+          <Descriptions.Item label="Đã bán">
+            {dataViewDetail?.sold}
+          </Descriptions.Item>
           <Descriptions.Item label="Giá">
-            {dataViewDetail?.price}
+            {dataViewDetail?.price &&
+              dataViewDetail.price
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND"}
           </Descriptions.Item>
 
           <Descriptions.Item label="Updated At">
@@ -105,21 +122,17 @@ const BookViewDetail = (props) => {
           onPreview={handlePreview}
           showUploadList={{ showRemoveIcon: false }}
         ></Upload>
-
-        {previewImage && (
-          <Image
-            wrapperStyle={{
-              display: "none",
-            }}
-            preview={{
-              visible: previewOpen,
-              onVisibleChange: (visible) => setPreviewOpen(visible),
-              afterOpenChange: (visible) => !visible && setPreviewImage(""),
-            }}
-            src={previewImage}
-          />
-        )}
       </Drawer>
+
+      <Modal
+        open={previewOpen}
+        title={previewTitle}
+        // title="Preview Image"
+        footer={null}
+        onCancel={() => setPreviewOpen(false)}
+      >
+        <img style={{ width: "100%" }} src={previewImage} />
+      </Modal>
     </>
   );
 };

@@ -41,13 +41,47 @@ export const getListBook = (param) => {
   return axios.get(`/api/v1/book${param}`);
 }
 
-export const postCreateBook = (data) => {
-  return axios.post(`/api/v1/book`, data);
+export const postCreateBook = (thumbnail,
+  slider,
+  mainText,
+  author,
+  price,
+  sold,
+  quantity,
+  category) => {
+  return axios.post(`/api/v1/book`, {
+    thumbnail,
+    slider,
+    mainText,
+    author,
+    price,
+    sold,
+    quantity,
+    category
+  });
 }
 
-export const putUpdateBook = (data) => {
-  return axios.put(`/api/v1/book`, data);
+export const putUpdateBook = (_id, thumbnail,
+  slider,
+  mainText,
+  author,
+  price,
+  sold,
+  quantity,
+  category) => {
+  return axios.put(`/api/v1/book/${_id}`, {
+
+    thumbnail,
+    slider,
+    mainText,
+    author,
+    price,
+    sold,
+    quantity,
+    category
+  });
 }
+
 
 export const deleteBook = (id) => {
   return axios.delete(`/api/v1/book/${id}`);

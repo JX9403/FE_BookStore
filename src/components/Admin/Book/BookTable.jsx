@@ -18,17 +18,12 @@ import {
   ReloadOutlined,
 } from "@ant-design/icons";
 import BookModalCreate from "./BookModalCreate";
-// import BookViewDetail from "./BookViewDetail";
+import BookViewDetail from "./BookViewDetail";
 // import BookImport from "./data/BookImport";
 
-// import BookModalUpdate from "./BookModalUpdate";
+import BookModalUpdate from "./BookModalUpdate";
 import * as XLSX from "xlsx";
-import {
-  deleteBook,
-  getListBook,
-  getListCategory,
-} from "../../../services/apiService";
-import BookViewDetail from "./BookViewDetail";
+import { deleteBook, getListBook } from "../../../services/apiService";
 import { render } from "react-dom";
 import moment from "moment";
 
@@ -51,8 +46,6 @@ const BookTable = () => {
   const [openViewDetail, setOpenViewDetail] = useState(false);
   const [dataViewDetail, setDataViewDetail] = useState(null);
 
-  const [openModalImport, setOpenModalImport] = useState(false);
-
   useEffect(() => {
     fetchBook();
   }, [current, pageSize, filter, sortQuery]);
@@ -66,7 +59,7 @@ const BookTable = () => {
     if (sortQuery) {
       query += `&${sortQuery}`;
     }
-    console.log("query<<", query);
+    // console.log("query<<", query);
     const res = await getListBook(query);
     if (res && res.data) {
       setListBook(res.data.result);
@@ -74,7 +67,7 @@ const BookTable = () => {
     }
     setIsLoading(false);
   };
-
+  // console.log(dataModalUpdate);
   const handleExportData = () => {
     if (listBook.length > 0) {
       const worksheet = XLSX.utils.json_to_sheet(listBook);
@@ -92,6 +85,7 @@ const BookTable = () => {
           <a
             href="#"
             onClick={() => {
+              // console.log(record);
               setDataViewDetail(record);
               setOpenViewDetail(true);
             }}
@@ -151,6 +145,7 @@ const BookTable = () => {
 
             <span
               onClick={() => {
+                // console.log(record);
                 setDataModalUpdate(record);
                 setOpenModalUpdate(true);
               }}
@@ -184,7 +179,7 @@ const BookTable = () => {
   const handleDeleteBook = async (bookId) => {
     const res = await deleteBook(bookId);
     if (res && res.data) {
-      message.success("Xóa book thành công");
+      message.success("Xóa sách thành công");
       fetchBook();
     } else {
       notification.error({
@@ -208,13 +203,13 @@ const BookTable = () => {
             Export
           </Button>
 
-          <Button
+          {/* <Button
             icon={<CloudUploadOutlined />}
             type="primary"
             onClick={() => setOpenModalImport(true)}
           >
             Import
-          </Button>
+          </Button> */}
 
           <Button
             icon={<PlusOutlined />}
@@ -268,15 +263,16 @@ const BookTable = () => {
       <BookModalCreate
         openModalCreate={openModalCreate}
         setOpenModalCreate={setOpenModalCreate}
+        fetchBook={fetchBook}
       />
 
-      {/* <BookModalUpdate
+      <BookModalUpdate
         openModalUpdate={openModalUpdate}
         setOpenModalUpdate={setOpenModalUpdate}
         dataModalUpdate={dataModalUpdate}
         setDataModalUpdate={setDataModalUpdate}
         fetchBook={fetchBook}
-      /> */}
+      />
 
       <BookViewDetail
         openViewDetail={openViewDetail}
@@ -284,13 +280,6 @@ const BookTable = () => {
         dataViewDetail={dataViewDetail}
         setDataViewDetail={setDataViewDetail}
       />
-
-      {/* 
-      <BookImport
-        setOpenModalImport={setOpenModalImport}
-        openModalImport={openModalImport}
-        fetchBook={fetchBook}
-      /> */}
     </>
   );
 };
