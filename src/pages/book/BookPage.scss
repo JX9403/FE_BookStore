@@ -1,0 +1,91 @@
+.bookpage {
+  margin-top: 40px;
+  .container {
+    background-color: #fff;
+    padding: 30px;
+    width: 90%;
+    margin: auto;
+    border-radius: 8px;
+
+    .author {
+      font-size: 16px;
+    }
+
+    .name {
+      font-size: 30px;
+      padding: 10px 0;
+    }
+    .rate {
+      margin-bottom: 10px;
+    }
+    .price {
+      padding: 30px 0;
+      font-size: 40px;
+      color: #ee4d2d;
+      font-weight: 600;
+    }
+    .text {
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      .left {
+        border-radius: 3px;
+        border: solid 1px #ee4d2d;
+        color: #ee4d2d;
+        padding: 10px 20px;
+        background-color: #fff;
+        font-size: 16px;
+        margin-right: 15px;
+        &:hover {
+          background-color: #ee4d2d;
+          color: #fff;
+          transition: all 0.2s linear;
+          cursor: pointer;
+        }
+      }
+
+      .right {
+        border-radius: 3px;
+        border: solid 1px #ee4d2d;
+        color: #ee4d2d;
+        padding: 10px 15px;
+        background-color: #ee4d2d;
+        color: #fff;
+        font-size: 16px;
+        &:hover {
+          background-color: #fff;
+          color: #ee4d2d;
+          transition: all 0.2s linear;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .quantity {
+      margin: 20px 0;
+      .text-quantity {
+        margin-bottom: 20px;
+      }
+      .btn-quantity {
+        border: solid 1px #e8e8e8;
+        height: 40px;
+        width: 40px;
+        font-size: 20px;
+        margin: 0;
+        cursor: pointer;
+      }
+      input {
+        width: 100px;
+        margin: 0;
+        height: 40px;
+        font-size: 20px;
+        border: none;
+        border-top: 1px solid #e8e8e8;
+        border-bottom: 1px solid #e8e8e8;
+        outline: none;
+        text-align: center;
+      }
+    }
+  }
+}

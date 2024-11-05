@@ -1,0 +1,66 @@
+.pop {
+  // padding: 20px;
+  &-container {
+    max-height: 400px;
+    overflow-y: scroll;
+    .item {
+      display: flex;
+      border-bottom: solid 1px #1b1f2326;
+      padding: 10px 0;
+      cursor: pointer;
+      &:hover {
+        transition: all 0.2 linear;
+        background-color: #e8e8e8;
+      }
+      .left {
+        width: 20%;
+        display: flex;
+        justify-content: center;
+        align-self: center;
+        .image {
+          width: 60px;
+          height: 60px;
+
+          img {
+            width: 100%;
+            height: auto;
+          }
+        }
+      }
+      .right {
+        flex: 1;
+        .price {
+          color: #ee4d2d;
+        }
+
+        .ellipsis-text {
+          white-space: nowrap; /* Đảm bảo văn bản nằm trên 1 dòng */
+          overflow: hidden; /* Ẩn phần văn bản tràn ra ngoài */
+          text-overflow: ellipsis; /* Thay phần bị ẩn bằng dấu "..." */
+          width: 100%; /* Đặt chiều rộng của phần tử */
+        }
+      }
+    }
+  }
+
+  .pop-btn {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    .redirect {
+      border-radius: 3px;
+      border: solid 1px #ee4d2d;
+      color: #ee4d2d;
+      padding: 10px 15px;
+      background-color: #ee4d2d;
+      color: #fff;
+      font-size: 16px;
+      &:hover {
+        background-color: #fff;
+        color: #ee4d2d;
+        transition: all 0.2s linear;
+        cursor: pointer;
+      }
+    }
+  }
+}

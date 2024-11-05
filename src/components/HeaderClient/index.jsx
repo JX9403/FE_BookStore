@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaReact } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { VscSearchFuzzy } from "react-icons/vsc";
-import { Divider, Badge, Drawer, message, Avatar } from "antd";
+import { Divider, Badge, Drawer, message, Avatar, Popover } from "antd";
 import "./HeaderClient.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { DownOutlined, FontSizeOutlined } from "@ant-design/icons";
@@ -13,13 +13,22 @@ import { doLogoutAction } from "../../redux/account/accountSlice";
 import { postLogout } from "../../services/apiService";
 import { Link } from "react-router-dom";
 import { MdAccountCircle } from "react-icons/md";
+import PopContent from "./PopContent";
 
 const HeaderClient = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const isAuthenticated = useSelector((state) => state.account.isAuthenticated);
   const user = useSelector((state) => state.account.user);
+  const carts = useSelector((state) => state.order.carts);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const content = () => {
+    return (
+      <>
+        <PopContent carts={carts} />
+      </>
+    );
+  };
 
   const handleLogout = async () => {
     const res = await postLogout();
@@ -96,8 +105,14 @@ const HeaderClient = () => {
                     marginRight: "10px",
                   }}
                 >
-                  <Badge count={5} size={"small"}>
-                    <FiShoppingCart className="icon-cart" />
+                  <Badge count={carts?.length ?? 0} size={"small"}>
+                    <Popover
+                      placement="bottomRight"
+                      title="Sản phẩm mới thêm"
+                      content={content}
+                    >
+                      <FiShoppingCart className="icon-cart" />
+                    </Popover>
                   </Badge>
                 </span>
               </li>

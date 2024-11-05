@@ -104,3 +104,8 @@ export const callUploadBookImg = (fileImg) => {
     },
   });
 }
+
+
+export const getBookById = (id) => {
+  return axios.get(`/api/v1/book/${id}`);
+}
