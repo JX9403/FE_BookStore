@@ -49,7 +49,7 @@ export default function App() {
       children: [
         { index: true, element: <HomePage /> },
         {
-          path: "book",
+          path: "book/:slug",
           element: <BookPage />,
         },
         {

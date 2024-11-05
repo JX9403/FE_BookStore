@@ -1,36 +1,45 @@
 .homepage-container {
   background-color: #fff;
+  margin: 20px auto;
   border-radius: 8px;
   overflow: hidden;
   padding: 20px;
   .customize-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px 20px; //gap 10px, có 5 items trên 1 row => 4*10 = 40px cần được bớt ở width. 40/5items = 8px => calc trừ đi 8px
+    gap: 20px 10px; //gap 10px, có 5 items trên 1 row => 4*10 = 40px cần được bớt ở width. 40/5items = 8px => calc trừ đi 8px
 
     .column {
-      width: calc(25% - 18px);
-      // height: 100%;
-
+      background-color: #fff;
+      width: calc(20% - 8px);
+      border-radius: 8px;
+      box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
       &:hover {
-        box-shadow: 0 0.0625rem 20px 0 rgba(0, 0, 0, 0.05);
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         -webkit-transform: translateY(-0.0625rem);
         transform: translateY(-0.0625rem);
       }
 
       .wrapper {
-        box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-          rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-        padding: 20px 20px;
         cursor: pointer;
+        box-shadow: 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.1);
+        border-radius: 0.125rem;
+        padding: 20px;
         border-radius: 8px;
-        height: 88%;
 
         .text {
           padding: 0.5rem 0;
           font-size: 0.75rem;
         }
-
+        .text-ellipsis {
+          display: -webkit-box;
+          -webkit-line-clamp: 2; /* Giới hạn tối đa 2 dòng */
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          line-height: 1.5; /* Điều chỉnh để phù hợp với font */
+          min-height: calc(1.5em * 2); /* Chiều cao tối thiểu của 2 dòng */
+        }
         .rating {
           display: flex;
           align-items: center;
@@ -55,22 +64,16 @@
     @media screen and (max-width: 600px) {
       .column {
         flex: unset;
-        width: calc(50% - 16px);
+        width: calc(50% - 8px);
         flex-wrap: wrap;
       }
     }
 
     @media screen and (max-width: 800px) and (min-width: 601px) {
-      .customize-row {
-        display: flex;
+      .column {
+        flex: unset;
+        width: calc(25% - 8px);
         flex-wrap: wrap;
-        gap: 20px 10px; //gap 10px, có 5 items trên 1 row => 4*10 = 40px cần được bớt ở width. 40/5items = 8px => calc trừ đi 8px
-
-        .column {
-          flex: unset;
-          width: calc(25% - 8px);
-          flex-wrap: wrap;
-        }
       }
     }
   }
