@@ -109,3 +109,12 @@ export const callUploadBookImg = (fileImg) => {
 export const getBookById = (id) => {
   return axios.get(`/api/v1/book/${id}`);
 }
+
+export const postOrder = (data) => {
+
+  return axios.post(`/api/v1/order`, { ...data });
+}
+
+export const callOrderHistory = () => {
+  return axios.get('/api/v1/history');
+}

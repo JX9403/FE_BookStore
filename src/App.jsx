@@ -17,6 +17,8 @@ import LayoutAdmin from "./components/Layout/LayoutAdmin";
 
 import UserTable from "./components/Admin/User/UserTable";
 import BookTable from "./components/Admin/Book/BookTable";
+import CartPage from "./pages/cart";
+import HistoryPage from "./pages/history";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -51,6 +53,14 @@ export default function App() {
         {
           path: "book/:slug",
           element: <BookPage />,
+        },
+        {
+          path: "cart",
+          element: <CartPage />,
+        },
+        {
+          path: "history",
+          element: <HistoryPage />,
         },
         {
           path: "login",

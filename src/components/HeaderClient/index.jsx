@@ -45,6 +45,10 @@ const HeaderClient = () => {
       key: "account",
     },
     {
+      label: <Link to="/history">Lịch sử mua hàng</Link>,
+      key: "history",
+    },
+    {
       label: <label onClick={() => handleLogout()}>Đăng xuất</label>,
       key: "logout",
     },
@@ -54,7 +58,6 @@ const HeaderClient = () => {
     items.unshift({
       label: (
         <label>
-          {" "}
           <Link to="/admin">Trang quản trị</Link>
         </label>
       ),
@@ -79,7 +82,7 @@ const HeaderClient = () => {
               ☰
             </div>
             <div className="page-header__logo">
-              <span className="logo">
+              <span className="logo" onClick={() => navigate("/")}>
                 <img src={logo} alt="" />
               </span>
               <input
