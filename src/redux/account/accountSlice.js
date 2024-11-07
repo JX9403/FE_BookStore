@@ -42,6 +42,16 @@ export const accountSlice = createSlice({
       }
       localStorage.removeItem("access_token");
     },
+    doUpdateUserInfoAction: (state, action) => {
+      state.user.avatar = action.payload.avatar;
+      state.user.phone = action.payload.phone;
+      state.user.fullName = action.payload.fullName;
+    },
+
+    doUploadAvatarAction: (state, action) => {
+      state.tempAvatar = action.payload.avatar
+    }
+
   },
 
   extraReducers: (builder) => {
@@ -49,7 +59,7 @@ export const accountSlice = createSlice({
   },
 });
 
-export const { doLoginAction, doGetAccountAction, doLogoutAction } = accountSlice.actions;
+export const { doLoginAction, doGetAccountAction, doLogoutAction, doUpdateUserInfoAction, doUploadAvatarAction } = accountSlice.actions;
 
 
 export default accountSlice.reducer;

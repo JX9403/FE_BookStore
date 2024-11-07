@@ -19,6 +19,7 @@ import UserTable from "./components/Admin/User/UserTable";
 import BookTable from "./components/Admin/Book/BookTable";
 import CartPage from "./pages/cart";
 import HistoryPage from "./pages/history";
+import OrderTable from "./components/Admin/Order/OrderTable";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -56,11 +57,19 @@ export default function App() {
         },
         {
           path: "cart",
-          element: <CartPage />,
+          element: (
+            <ProtectedRoute>
+              <CartPage />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "history",
-          element: <HistoryPage />,
+          element: (
+            <ProtectedRoute>
+              <HistoryPage />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "login",
@@ -92,6 +101,10 @@ export default function App() {
         {
           path: "user",
           element: <UserTable />,
+        },
+        {
+          path: "order",
+          element: <OrderTable />,
         },
       ],
     },

@@ -15,7 +15,7 @@ import {
 import "./home.scss";
 import { getListBook, getListCategory } from "../../services/apiService";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutlet, useOutletContext } from "react-router-dom";
 const HomePage = () => {
   const [form] = Form.useForm();
   const [listCategory, setListCategory] = useState([]);
@@ -23,6 +23,7 @@ const HomePage = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [total, setTotal] = useState(0);
+  const [searchTerm, setSearchTerm] = useOutletContext();
 
   const [isLoading, setIsLoading] = useState(false);
   const [filter, setFilter] = useState("");
@@ -54,7 +55,7 @@ const HomePage = () => {
   };
   useEffect(() => {
     fetchBook();
-  }, [current, pageSize, filter, sortQuery]);
+  }, [current, pageSize, filter, sortQuery, searchTerm]);
 
   const fetchBook = async () => {
     setIsLoading(true);
@@ -64,6 +65,10 @@ const HomePage = () => {
     }
     if (sortQuery) {
       query += `&${sortQuery}`;
+    }
+
+    if (searchTerm) {
+      query += `&mainText=/${searchTerm}/i`;
     }
     console.log("query<<", query);
     const res = await getListBook(query);
@@ -159,6 +164,7 @@ const HomePage = () => {
               onClick={() => {
                 form.resetFields();
                 setFilter("");
+                setSearchTerm("");
               }}
             />
           </div>

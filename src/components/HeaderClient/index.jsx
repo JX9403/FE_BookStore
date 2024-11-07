@@ -14,9 +14,13 @@ import { postLogout } from "../../services/apiService";
 import { Link } from "react-router-dom";
 import { MdAccountCircle } from "react-icons/md";
 import PopContent from "./PopContent";
+import ManageAccount from "../Account/ManageAccount";
+import { validate } from "uuid";
+import { Value } from "sass";
 
-const HeaderClient = () => {
+const HeaderClient = (props) => {
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const isAuthenticated = useSelector((state) => state.account.isAuthenticated);
   const user = useSelector((state) => state.account.user);
   const carts = useSelector((state) => state.order.carts);
@@ -41,7 +45,9 @@ const HeaderClient = () => {
 
   const items = [
     {
-      label: <label>Quản lý tài khoản</label>,
+      label: (
+        <label onClick={() => setIsModalOpen(true)}>Quản lý tài khoản</label>
+      ),
       key: "account",
     },
     {
@@ -86,6 +92,7 @@ const HeaderClient = () => {
                 <img src={logo} alt="" />
               </span>
               <input
+                onChange={(e) => props.setSearchTerm(e.target.value)}
                 className="input-search"
                 type={"text"}
                 placeholder="Bạn tìm gì hôm nay"
@@ -170,6 +177,11 @@ const HeaderClient = () => {
         <p onClick={() => handleLogout()}>Đăng xuất</p>
         <Divider />
       </Drawer>
+
+      <ManageAccount
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      />
     </>
   );
 };
