@@ -27,7 +27,9 @@ export const orderSlice = createSlice({
       }
       state.carts = carts;
     },
-
+    removeCart: (state, action) => {
+      state.carts?.splice(0, state.carts.length);
+    },
     doUpdateCartAction: (state, action) => {
       let carts = state.carts;
       const item = action.payload;
@@ -57,7 +59,7 @@ export const orderSlice = createSlice({
   },
 });
 
-export const { doAddBookAction, doDeleteItemCartAction, doUpdateCartAction, doPlaceOrder } = orderSlice.actions;
+export const { doAddBookAction, doDeleteItemCartAction, doUpdateCartAction, doPlaceOrder, removeCart } = orderSlice.actions;
 
 
 export default orderSlice.reducer;

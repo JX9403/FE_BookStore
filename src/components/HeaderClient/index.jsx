@@ -17,6 +17,7 @@ import PopContent from "./PopContent";
 import ManageAccount from "../Account/ManageAccount";
 import { validate } from "uuid";
 import { Value } from "sass";
+import { removeCart } from "../../redux/order/orderSlice";
 
 const HeaderClient = (props) => {
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -38,6 +39,7 @@ const HeaderClient = (props) => {
     const res = await postLogout();
     if (res && res.data) {
       dispatch(doLogoutAction());
+      dispatch(removeCart());
       message.success("Đăng xuất thành công!");
       navigate("/");
     }
